@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Catatan</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <meta name="description" content="Aplikasi pencatatan sederhana untuk menyimpan dan mengelola catatan Anda">
+</head>
+<body>
+    <!-- Skip to content link for accessibility -->
+    <a href="#main-content" class="skip-link">Langsung ke konten</a>
+    
+    <div class="container">
+        <header>
+            <app-header search-placeholder="Cari catatan..." aria-label="Header aplikasi catatan"></app-header>
+        </header>
+        
+        <main id="main-content">
+            <section aria-labelledby="form-heading">
+                <note-form max-title-length="50"></note-form>
+            </section>
+            
+            <section class="notes-section" aria-labelledby="active-notes-heading">
+                <h2 id="active-notes-heading">📝 Catatan Aktif</h2>
+                <notes-list id="active-notes" list-type="active" aria-label="Daftar catatan aktif"></notes-list>
+            </section>
+            
+            <section class="notes-section" aria-labelledby="archived-notes-heading">
+                <h2 id="archived-notes-heading">📦 Arsip</h2>
+                <notes-list id="archived-notes" list-type="archived" aria-label="Daftar catatan arsip"></notes-list>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/data.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/components/app-header.js"></script>
+    <script src="js/components/note-form.js"></script>
+    <script src="js/components/notes-list.js"></script>
+    <script src="js/components/note-item.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
