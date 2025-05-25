@@ -1,11 +1,10 @@
 // Global state management
 
-// State aplikasi - Langsung gunakan data awal, tanpa localStorage untuk sekarang
+// State aplikasi - Inisialisasi dengan data dari data.js
 let notes = getInitialData();
 let searchQuery = '';
 
-// Pastikan data dimuat
-console.log('Initial notes loaded:', notes.length, 'items', notes);
+console.log('Data loaded:', notes.length, 'notes');
 
 // State management functions
 const NotesState = {
@@ -16,8 +15,6 @@ const NotesState = {
 
     // Get filtered notes based on archive status and search query
     getFilteredNotes(isArchived = false) {
-        console.log(`Filtering notes with isArchived=${isArchived}, searchQuery="${searchQuery}"`);
-        
         const filtered = notes.filter(note => {
             const matchesArchiveStatus = note.archived === isArchived;
             const matchesSearch = searchQuery === '' || 
@@ -27,7 +24,7 @@ const NotesState = {
             return matchesArchiveStatus && matchesSearch;
         });
         
-        console.log(`Found ${filtered.length} notes matching criteria`);
+        console.log(`Found ${filtered.length} ${isArchived ? 'archived' : 'active'} notes`);
         return filtered;
     },
 
@@ -41,18 +38,17 @@ const NotesState = {
             archived: false
         };
         
-        notes = [...notes, newNote]; // Buat array baru untuk menjaga immutability
+        notes.push(newNote);
         this.notifyStateChange();
-        
         console.log('Note added, total notes:', notes.length);
+        return newNote;
     },
 
     // Delete note by ID
     deleteNote(id) {
         notes = notes.filter(note => note.id !== id);
         this.notifyStateChange();
-        
-        console.log('Note deleted, ID:', id, 'total notes:', notes.length);
+        console.log('Note deleted, ID:', id);
     },
 
     // Toggle archive status of a note
@@ -63,7 +59,6 @@ const NotesState = {
                 : note
         );
         this.notifyStateChange();
-        
         console.log('Note archive toggled, ID:', id);
     },
 
@@ -71,6 +66,7 @@ const NotesState = {
     setSearchQuery(query) {
         searchQuery = query;
         this.notifyStateChange();
+        console.log('Search query updated:', query);
     },
 
     // Get current search query
@@ -80,23 +76,24 @@ const NotesState = {
 
     // Notify all components about state change
     notifyStateChange() {
-        console.log("State changed, updating components...");
+        console.log('State changed, updating components');
+        
         // Update notes lists
         const activeNotesList = document.getElementById('active-notes');
         const archivedNotesList = document.getElementById('archived-notes');
         
         if (activeNotesList) {
-            console.log("Updating active notes list");
+            console.log('Updating active notes list');
             activeNotesList.updateNotes();
         } else {
-            console.warn("Active notes list element not found!");
+            console.warn('Active notes list element not found!');
         }
         
         if (archivedNotesList) {
-            console.log("Updating archived notes list");
+            console.log('Updating archived notes list');
             archivedNotesList.updateNotes();
         } else {
-            console.warn("Archived notes list element not found!");
+            console.warn('Archived notes list element not found!');
         }
     }
 };

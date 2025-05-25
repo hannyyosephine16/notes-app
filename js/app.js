@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('📝 Aplikasi Catatan berhasil dimuat!');
     console.log('Initial data:', getInitialData().length, 'notes');
     
-    // Force update notes lists
+    // Force update notes lists after a short delay to ensure all components are loaded
     setTimeout(() => {
         console.log('Forcing initial render of notes');
         
@@ -19,20 +19,22 @@ document.addEventListener('DOMContentLoaded', function() {
         const archivedNotesList = document.getElementById('archived-notes');
         
         if (activeNotesList) {
-            console.log('Found active-notes element, updating...');
+            console.log('Updating active notes list');
             activeNotesList.updateNotes();
         } else {
-            console.warn('active-notes element not found in DOM!');
-            console.log('All note lists:', document.querySelectorAll('notes-list'));
+            console.warn('active-notes element not found!');
         }
         
         if (archivedNotesList) {
-            console.log('Found archived-notes element, updating...');
+            console.log('Updating archived notes list');
             archivedNotesList.updateNotes();
         } else {
-            console.warn('archived-notes element not found in DOM!');
+            console.warn('archived-notes element not found!');
         }
-    }, 100);
+        
+        // Log all notes-list elements to check if they exist
+        console.log('Notes list elements found:', document.querySelectorAll('notes-list').length);
+    }, 300); // Longer delay to ensure everything is initialized
 
     // Set up global event listeners
     document.addEventListener('keydown', function(e) {
@@ -55,4 +57,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+
+    // Add loading animation
+    setTimeout(() => {
+        document.body.classList.add('loaded');
+    }, 100);
 });

@@ -244,19 +244,6 @@ class NoteForm extends HTMLElement {
             NotesState.addNote(noteData);
             this.resetForm();
             this.showSuccessMessage();
-
-            // Announce success to screen readers
-            const successMessage = document.createElement('div');
-            successMessage.setAttribute('aria-live', 'assertive');
-            successMessage.classList.add('visually-hidden');
-            successMessage.textContent = 'Catatan berhasil ditambahkan!';
-            this.appendChild(successMessage);
-            
-            setTimeout(() => {
-                if (this.contains(successMessage)) {
-                    this.removeChild(successMessage);
-                }
-            }, 3000);
         }
     }
     

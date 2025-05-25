@@ -54,7 +54,7 @@ const getInitialData = () => [
         title: 'Daily Reflections',
         body: 'Write down three positive things that happened today and one thing to improve tomorrow.',
         createdAt: '2022-09-07T20:40:30.150Z',
-        archived: false,
+        archived: true, // Note ini diarsipkan
     },
     {
         id: 'notes-poiuyt-987654',
@@ -68,7 +68,7 @@ const getInitialData = () => [
         title: 'Coding Projects',
         body: '1. Build a personal website\n2. Create a mobile app\n3. Contribute to an open-source project',
         createdAt: '2022-09-20T17:10:12.987Z',
-        archived: false,
+        archived: true, // Note ini diarsipkan
     },
     {
         id: 'notes-5678-abcd-efgh',

@@ -3,13 +3,13 @@ class NotesList extends HTMLElement {
     constructor() {
         super();
         this.listType = this.getAttribute('list-type');
-        console.log(`NotesList constructed with type: ${this.listType}`);
+        console.log(`NotesList created with type: ${this.listType}`);
         this.render();
     }
 
     connectedCallback() {
         console.log(`NotesList connected to DOM with type: ${this.listType}`);
-        // Panggil updateNotes() segera setelah elemen terhubung ke DOM
+        // Important: Make sure this runs after DOM is fully loaded
         setTimeout(() => this.updateNotes(), 0);
     }
 
@@ -50,37 +50,37 @@ class NotesList extends HTMLElement {
     }
     
     updateNotes() {
-        console.log(`Updating notes for ${this.listType} list`);
-        
-        // Dapatkan catatan yang difilter
-        const isArchived = this.listType === 'archived';
-        const filteredNotes = NotesState.getFilteredNotes(isArchived);
-        
-        console.log(`Found ${filteredNotes.length} notes for ${this.listType} list`);
-        
-        // Bersihkan grid
-        this.notesGrid.innerHTML = '';
-        
-        if (filteredNotes.length === 0) {
-            // Tampilkan pesan kosong jika tidak ada catatan
-            this.notesGrid.innerHTML = `<div class="empty-message">Tidak ada catatan ${this.listType === 'archived' ? 'arsip' : 'aktif'} 📝</div>`;
-            console.log(`No notes found for ${this.listType} list, showing empty message`);
-        } else {
-            // Buat dan tambahkan elemen note-item untuk setiap catatan
-            filteredNotes.forEach((note, index) => {
-                console.log(`Rendering note ${index+1}/${filteredNotes.length}: ${note.id} - ${note.title}`);
-                
-                const noteItem = document.createElement('note-item');
-                noteItem.setAttribute('note-id', note.id);
-                noteItem.setAttribute('note-title', escapeHtml(note.title || ''));
-                noteItem.setAttribute('note-body', escapeHtml(note.body || ''));
-                noteItem.setAttribute('note-date', note.createdAt);
-                noteItem.setAttribute('note-archived', String(note.archived));
-                
-                this.notesGrid.appendChild(noteItem);
-            });
+        try {
+            // Get filtered notes
+            const isArchived = this.listType === 'archived';
+            const filteredNotes = NotesState.getFilteredNotes(isArchived);
             
-            console.log(`Rendered ${filteredNotes.length} notes for ${this.listType} list`);
+            console.log(`Found ${filteredNotes.length} notes for ${this.listType} list`);
+            
+            // Clear the grid
+            this.notesGrid.innerHTML = '';
+            
+            if (filteredNotes.length === 0) {
+                // Show empty message if no notes
+                this.notesGrid.innerHTML = `<div class="empty-message">Tidak ada catatan ${isArchived ? 'arsip' : 'aktif'} 📝</div>`;
+            } else {
+                // Create and add note-item elements for each note
+                filteredNotes.forEach((note, index) => {
+                    console.log(`Rendering note ${index+1}: ${note.title}`);
+                    
+                    const noteItem = document.createElement('note-item');
+                    noteItem.setAttribute('note-id', note.id);
+                    noteItem.setAttribute('note-title', escapeHtml(note.title || ''));
+                    noteItem.setAttribute('note-body', escapeHtml(note.body || ''));
+                    noteItem.setAttribute('note-date', note.createdAt);
+                    noteItem.setAttribute('note-archived', String(note.archived));
+                    
+                    this.notesGrid.appendChild(noteItem);
+                });
+            }
+        } catch (error) {
+            console.error('Error updating notes:', error);
+            this.notesGrid.innerHTML = '<div class="empty-message">Error loading notes. Check console for details.</div>';
         }
     }
 
@@ -90,8 +90,7 @@ class NotesList extends HTMLElement {
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        console.log(`Attribute ${name} changed from ${oldValue} to ${newValue}`);
-        if (name === 'list-type') {
+        if (name === 'list-type' && oldValue !== newValue) {
             this.listType = newValue;
             this.updateNotes();
         }
